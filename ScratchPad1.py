@@ -6,7 +6,6 @@ def getDomain(inEmail):
 
 if __name__ == '__main__':
 
-    #a change that I don't care about
     theEmail = 'campbell.bg@gmail.com'
 
     print(getDomain(theEmail))
