@@ -13,7 +13,45 @@ pd.set_option('display.width', 400)
 pd.set_option('display.max_columns', 10)
 np.set_printoptions(linewidth=400)
 
+#Linear Regression coding exercise
+#***********************************************************************************************************************
 
+#ecommerce data. Read it and understand it
+customers_all = pd.read_csv('D:\\Course Content\\python-for-data-science-and-ml-bootcamp\\11-Linear-Regression\\Ecommerce Customers')
+customers = customers_all[['Avg. Session Length', 'Time on App', 'Time on Website', 'Length of Membership', 'Yearly Amount Spent']] #reduce to the numerical fields only
+
+#print(customers.corr()) #Based on this is looks like a strong correlation between time on app and the spend
+
+#jointplots are pretty cool. This shows a strong correlation with the Time on the App
+#sb.jointplot(customers['Yearly Amount Spent'], customers['Time on Website'])
+#sb.jointplot(customers['Yearly Amount Spent'], customers['Time on App'])
+
+#sb.pairplot(customers)
+#sb.lmplot(data = customers[['Yearly Amount Spent', 'Length of Membership']], x = 'Yearly Amount Spent', y = 'Length of Membership')
+#plt.show()
+
+custxtrain, custxtest, custytrain, custytest = train_test_split(customers[['Avg. Session Length', 'Time on App', 'Time on Website', 'Length of Membership']], customers['Yearly Amount Spent'], test_size = 0.3, random_state = 101)
+
+#Tried without the lowly correlated variables but surprisingly it did not make much of a difference at all
+#custxtrain, custxtest, custytrain, custytest = train_test_split(customers[['Time on App', 'Length of Membership']], customers['Yearly Amount Spent'], test_size = 0.3, random_state = 101)
+
+#Instantiate and train the model
+lm = LinearRegression()
+lm.fit(X = custxtrain, y = custytrain)
+
+#Have a look at the coefficients from the trained model
+print(pd.DataFrame(data = lm.coef_, index = ['Avg. Session Length', 'Time on App', 'Time on Website', 'Length of Membership']))
+
+#Predict the test values and then visualise the residuals
+predictions = lm.predict(X = custxtest)
+#sb.scatterplot(x = predictions, y = custytest)
+#plt.show()
+
+#Look at the key performance metrics of the model
+print('*********************************')
+print(f'Mean Abs Error = {metrics.mean_absolute_error(y_true = custytest, y_pred = predictions)}')
+print(f'Mean Squared Error = {metrics.mean_squared_error(y_true = custytest, y_pred = predictions)}')
+print(f'SQRT Mean Sqaured Error = {np.sqrt(metrics.mean_squared_error(y_true = custytest, y_pred = predictions))}')
 
 ''' USA Housing Data. Not real data
 #***********************************************************************************************************************
