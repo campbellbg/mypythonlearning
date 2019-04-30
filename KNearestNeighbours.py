@@ -16,17 +16,41 @@ np.set_printoptions(linewidth=400)
 dataLoc = 'D:\\Course Content\\python-for-data-science-and-ml-bootcamp\\14-K-Nearest-Neighbors\\'
 
 #Project code
+#['XVPM', 'GWYH', 'TRAT', 'TLLZ', 'IGGA', 'HYKR', 'EDFS', 'GUUB', 'MGJM', 'JHZC', 'TARGET CLASS']
 my_df = pd.read_csv(dataLoc + 'KNN_Project_Data')
 
 #Check the data for completeness (NULLS and NA's)
+#sb.heatmap(data=my_df.isnull())
+#plt.show()
 
 #Any data not standardised? Standardise using a StandardScaler
+my_scale = StandardScaler().fit(my_df[my_df.columns[:-1]])
+my_x_data = pd.DataFrame(data=my_scale.transform(my_df[my_df.columns[:-1]]), columns=my_df.columns[:-1])
+
+#Train/Test split of data
+my_x_train, my_x_test, my_y_train, my_y_test = train_test_split(my_x_data, my_df['TARGET CLASS'])
 
 #Find the optimal 'k' value using the elbow method
+'''
+error_rates = []
+
+for i in range(1, 100):
+    my_knn = KNeighborsClassifier(n_neighbors=i).fit(X=my_x_train, y=my_y_train)
+    my_predictions = my_knn.predict(X=my_x_test)
+    error_rates.append(np.mean(my_y_test != my_predictions))
+
+sb.lineplot(x=range(1,100), y=error_rates, markers='o')
+plt.show()
+'''
 
 #Instantiate and fit the KNN model using the k value from above
+my_knn = KNeighborsClassifier(n_neighbors=20).fit(X=my_x_train, y=my_y_train)
+my_predictions = my_knn.predict(X=my_x_test)
 
 #Look at the confusion matrix and classification report, how did we do?
+print(confusion_matrix(y_true=my_y_test, y_pred=my_predictions))
+print('----------------------------------------------------------')
+print(classification_report(y_true=my_y_test, y_pred=my_predictions))
 
 ''' ***********************************************************************
 #Below is the code from the lectures
